@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format:fix": "prettier --write .",
-    "prepare": "npx husky init",
+    "prepare": "npx husky init"
   },
   "dependencies": {
     "react": "^19.1.1",
