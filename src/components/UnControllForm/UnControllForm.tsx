@@ -9,6 +9,7 @@ export default function UnControllForm({
 }: {
   isShowing: boolean;
   hide: () => void;
+  ref: HTMLFormElement;
 }) {
   const [state, formAction, isPending] = useActionState(
     actionReactSubmit,

@@ -1,7 +1,19 @@
 import './style.css';
 import { createPortal } from 'react-dom';
-import { actionReactSubmit } from '../../actions/submitReactForm';
-import { useActionState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
+
+type Inputs = {
+  name: string;
+  exampleRequired: string;
+  number: number;
+  email: string;
+  password: string;
+  rpassword: string;
+  gender: string;
+  agreement: boolean;
+  country: string;
+};
 
 export default function ControllForm({
   isShowing,
@@ -10,10 +22,14 @@ export default function ControllForm({
   isShowing: boolean;
   hide: () => void;
 }) {
-  const [state, formAction, isPending] = useActionState(
-    actionReactSubmit,
-    null
-  );
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  console.log(watch('name'), watch('number')); // watch input value by passing the name of it
 
   const formContentEl = document.getElementById('modal');
 
@@ -26,31 +42,49 @@ export default function ControllForm({
     return !isShowing
       ? null
       : createPortal(
-          <form action={formAction} id="controll">
-            <label htmlFor="name">Name:</label>
-            <input type="text" name="name" id="name" />
+          <form onSubmit={handleSubmit(onSubmit)} id="controll">
+            <label htmlFor="userName">Name:</label>
+            <input type="text" id="userName" {...register('name')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="age">Age:</label>
-            <input type="number" name="age" id="age" />
+            <input type="number" id="age" {...register('number')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="email">Email:</label>
-            <input type="email" name="email" id="email" />
+            <input type="email" id="email" {...register('email')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="password">Password:</label>
-            <input type="password" name="password" id="password" />
+            <input type="password" id="password" {...register('password')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="rpassword">Repeat password:</label>
-            <input type="password" name="rpassword" id="rpassword" />
+            <input type="password" id="rpassword" {...register('rpassword')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="male">Male:</label>
-            <input type="radio" name="gender" id="male" value="male" />
+            <input
+              type="radio"
+              id="male"
+              value="male"
+              {...register('gender')}
+            />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="female">Female:</label>
-            <input type="radio" name="gender" id="female" value="female" />
+            <input
+              type="radio"
+              id="female"
+              value="female"
+              {...register('gender')}
+            />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="agreement">Terms and Conditions agreement:</label>
-            <input type="checkbox" name="agreement" id="agreement" />
+            <input type="checkbox" id="agreement" {...register('agreement')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="file">File:</label>
             <input type="file" name="file" id="file" />
+            {errors.exampleRequired && <span>This field is required</span>}
             <label htmlFor="country">Country:</label>
-            <input type="text" name="country" id="country" />
+            <input type="text" id="country" {...register('country')} />
+            {errors.exampleRequired && <span>This field is required</span>}
             <fieldset>
-              <button type="submit" disabled>
-                {isPending ? 'Waiting...' : 'Submit'}
-              </button>
+              <input type="submit" />
               <button type="button" onClick={hide}>
                 Close modal
               </button>
