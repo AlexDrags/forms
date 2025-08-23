@@ -1,14 +1,21 @@
 import { useState } from 'react';
 
 export default function useModal() {
-  const [isShowing, setIsShowing] = useState(false);
+  const [isShowingControll, setIsShowingControll] = useState(false);
+  const [isShowingUnControll, setIsShowingUnControll] = useState(false);
 
-  function toggle() {
-    setIsShowing(!isShowing);
+  function toggleControllForm() {
+    setIsShowingControll(!isShowingControll);
+  }
+
+  function toggleUnControllForm() {
+    setIsShowingUnControll(!isShowingUnControll);
   }
 
   return {
-    isShowing,
-    toggle,
+    isShowingControll,
+    toggleControllForm,
+    isShowingUnControll,
+    toggleUnControllForm,
   };
 }

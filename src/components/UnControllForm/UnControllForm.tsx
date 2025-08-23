@@ -1,23 +1,31 @@
-import { createPortal } from 'react-dom';
 import './style.css';
-export default function ReactForm({
+import { createPortal } from 'react-dom';
+import { actionReactSubmit } from '../../actions/submitReactForm';
+import { useActionState } from 'react';
+
+export default function UnControllForm({
   isShowing,
   hide,
 }: {
   isShowing: boolean;
   hide: () => void;
 }) {
+  const [state, formAction, isPending] = useActionState(
+    actionReactSubmit,
+    null
+  );
   const formContentEl = document.getElementById('modal');
-  if (!formContentEl) return null;
-  async function sendForm(formdata: FormData) {
-    'use server';
-    console.log('send form:', formdata);
+
+  if (!formContentEl) {
+    console.log(state);
+    return null;
   }
+
   {
     return !isShowing
       ? null
       : createPortal(
-          <form action={sendForm}>
+          <form action={formAction} id="controll">
             <label htmlFor="name">Name:</label>
             <input type="text" name="name" id="name" />
             <label htmlFor="age">Age:</label>
@@ -39,7 +47,9 @@ export default function ReactForm({
             <label htmlFor="country">Country:</label>
             <input type="text" name="country" id="country" />
             <fieldset>
-              <button type="submit">Submit</button>
+              <button type="submit" disabled>
+                {isPending ? 'Waiting...' : 'Submit'}
+              </button>
               <button type="button" onClick={hide}>
                 Close modal
               </button>

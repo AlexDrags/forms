@@ -1,16 +1,28 @@
 import './App.css';
+
 import useModal from './hooks/useModal';
-import ReactForm from './components/ReactForm/ReactForm';
+import ControllForm from './components/ControllForm/controllForm';
+import UnControllForm from './components/UnControllForm/UnControllForm';
 
 function App() {
-  const { isShowing, toggle } = useModal();
+  const {
+    isShowingControll,
+    toggleControllForm,
+    isShowingUnControll,
+    toggleUnControllForm,
+  } = useModal();
+
   return (
     <>
-      <ReactForm isShowing={isShowing} hide={toggle} />
-      <button type="button" onClick={toggle}>
+      <ControllForm isShowing={isShowingControll} hide={toggleControllForm} />
+      <button type="button" onClick={toggleControllForm}>
         uncontrolled components
       </button>
-      <button type="button" onClick={toggle}>
+      <UnControllForm
+        isShowing={isShowingUnControll}
+        hide={toggleUnControllForm}
+      />
+      <button type="button" onClick={toggleUnControllForm}>
         controlled components
       </button>
     </>
