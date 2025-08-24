@@ -1,12 +1,25 @@
 import { create } from 'zustand';
 
+interface IStore {
+  name: string;
+  age: number;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  gender: string;
+  agreement: boolean;
+  picture: FileList;
+  country: string;
+  base: string;
+}
+
 type Store = {
-  data: FormData;
-  updateData: (formData: FormData) => void;
+  data: IStore | null;
+  updateData: (formData: IStore) => void;
 };
 
-export const reactFormState = create<Store>()((set) => ({
-  data: new FormData(),
-  updateData: (formData: FormData) => set({ data: formData }),
-  cleanData: set({ data: new FormData() }),
+export const useReactFormState = create<Store>()((set) => ({
+  data: null,
+  updateData: (formData: IStore) => set({ data: formData }),
+  cleanData: () => set({ data: null }),
 }));

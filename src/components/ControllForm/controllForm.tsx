@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from '../../shema/shema';
 import type { FormData } from '../../shema/shema';
+import { useReactFormState } from '../../store/formsStore';
 
 export default function ControllForm({
   isShowing,
@@ -12,12 +13,13 @@ export default function ControllForm({
   isShowing: boolean;
   hide: () => void;
 }) {
+  const formDataState = useReactFormState((state) => state.data);
+  const updateFormDataState = useReactFormState((state) => state.updateData);
   const {
     formState,
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<FormData>({
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -25,6 +27,15 @@ export default function ControllForm({
   const { isValid } = formState;
 
   const formContentEl = document.getElementById('modal');
+  function printFile(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        if (evt.target?.result) resolve(evt.target?.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   if (!formContentEl) {
     return null;
@@ -36,8 +47,19 @@ export default function ControllForm({
       : createPortal(
           <form
             onSubmit={handleSubmit((data) => {
-              console.log(isValid, data);
-              reset();
+              if (data.picture[0]) {
+                (async function foo() {
+                  const fdata = await printFile(data.picture[0]);
+                  const obj = { base: fdata };
+                  const t = Object.assign(data, obj);
+                  console.log(t);
+                  updateFormDataState(t);
+                  console.log(formDataState);
+                })();
+              }
+              // updateFormDataState(obj);
+
+              // console.log('formDataState', formDataState);
             })}
             id="controll"
           >
@@ -83,18 +105,26 @@ export default function ControllForm({
             </label>
             <input type="checkbox" id="agreement" {...register('agreement')} />
             {errors.agreement && <span>{errors.agreement.message}</span>}
-            <label htmlFor="file">File:</label>
-            <input type="file" name="file" id="file" />
-            {/* {errors.exampleRequired && <span>This field is required</span>} */}
+            <label htmlFor="picture">File:</label>
+            <input
+              type="file"
+              id="picture"
+              accept="image/png, image/jpeg"
+              {...register('picture')}
+            />
+            {errors.picture && <span>{errors.picture.message}</span>}
             <label htmlFor="country">Country:</label>
             <input type="text" id="country" {...register('country')} />
             {errors.country && <span>{errors.country.message}</span>}
+            {/* <label htmlFor="base">hidden:</label> */}
+            <input type="text" id="base" value={'s'} {...register('base')} />
             <fieldset>
               <input type="submit" disabled={!isValid} />
               <button type="button" onClick={hide}>
                 Close modal
               </button>
             </fieldset>
+            {/* <img src="localhost:5173/5d20051f-af78-4c24-ad2f-0fce75c64d5c" /> */}
           </form>,
           formContentEl
         );

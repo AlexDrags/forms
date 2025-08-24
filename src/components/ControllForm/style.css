@@ -10,4 +10,8 @@ form {
         display: flex;
         gap: 10px;
     }
+
+    & #base {
+        visibility: hidden;
+    }
 }
