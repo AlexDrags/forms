@@ -36,7 +36,6 @@ export const schema = yup
       .oneOf([true], 'You must accept the terms and conditions')
       .required('This field is required'),
     picture: yup.mixed<FileList>().required(),
-    // picture: yup.string().required(),
     country: yup.string().required(),
     base: yup.string().required(),
   })

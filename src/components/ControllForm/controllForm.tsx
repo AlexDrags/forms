@@ -28,6 +28,7 @@ export default function ControllForm({
   const { isValid } = formState;
 
   const formContentEl = document.getElementById('modal');
+
   function printFile(file: File) {
     return new Promise((resolve) => {
       const reader = new FileReader();

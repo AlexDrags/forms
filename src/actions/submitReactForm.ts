@@ -1,10 +1,6 @@
 export async function actionReactSubmit(
-  previousState: unknown | null,
+  previousState: FormData | null,
   formData: FormData
 ) {
-  'use server';
-  console.log('send form:', formData);
-  setTimeout(() => {
-    return formData.values();
-  }, 50000);
+  console.log('send form:', formData.get('name'));
 }

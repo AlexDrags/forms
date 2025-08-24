@@ -24,3 +24,9 @@ export const useReactFormState = create<Store>()((set) => ({
   updateData: (formData: IStore) => set({ data: formData }),
   cleanData: () => set({ data: null }),
 }));
+
+export const useUnControllFormState = create<Store>()((set) => ({
+  data: null,
+  updateData: (formData: IStore) => set({ data: formData }),
+  cleanData: () => set({ data: null }),
+}));
