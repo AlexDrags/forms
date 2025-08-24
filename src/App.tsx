@@ -15,14 +15,14 @@ function App() {
     <>
       <ControllForm isShowing={isShowingControll} hide={toggleControllForm} />
       <button type="button" onClick={toggleControllForm}>
-        uncontrolled components
+        controlled components
       </button>
       <UnControllForm
         isShowing={isShowingUnControll}
         hide={toggleUnControllForm}
       />
       <button type="button" onClick={toggleUnControllForm}>
-        controlled components
+        uncontrolled components
       </button>
     </>
   );

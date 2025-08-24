@@ -2,22 +2,8 @@ import './style.css';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-const schema = yup
-  .object()
-  .shape({
-    name: yup.string().min(10).required('Имя обязательно'),
-    age: yup.number().positive().integer().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(8).max(32).required(),
-    rpassword: yup.string().min(8).max(32).required(),
-    gender: yup.string().required(),
-    agreement: yup.boolean().required(),
-    country: yup.string().required(),
-  })
-  .required();
-type FormData = yup.InferType<typeof schema>;
+import { schema } from '../../shema/shema';
+import type { FormData } from '../../shema/shema';
 
 export default function ControllForm({
   isShowing,
@@ -31,6 +17,7 @@ export default function ControllForm({
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -48,7 +35,10 @@ export default function ControllForm({
       ? null
       : createPortal(
           <form
-            onSubmit={handleSubmit((data) => console.log(isValid, data))}
+            onSubmit={handleSubmit((data) => {
+              console.log(isValid, data);
+              reset();
+            })}
             id="controll"
           >
             <label htmlFor="name">Name:</label>
@@ -63,9 +53,15 @@ export default function ControllForm({
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" {...register('password')} />
             {errors.password && <span>{errors.password.message}</span>}
-            <label htmlFor="rpassword">Repeat password:</label>
-            <input type="password" id="rpassword" {...register('rpassword')} />
-            {errors.rpassword && <span>{errors.rpassword.message}</span>}
+            <label htmlFor="confirmPassword">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              {...register('confirmPassword')}
+            />
+            {errors.confirmPassword && (
+              <span>{errors.confirmPassword.message}</span>
+            )}
             <label htmlFor="male">Male:</label>
             <input
               type="radio"
@@ -82,7 +78,9 @@ export default function ControllForm({
               {...register('gender')}
             />
             {errors.gender && <span>{errors.gender.message}</span>}
-            <label htmlFor="agreement">Terms and Conditions agreement:</label>
+            <label htmlFor="agreement">
+              Accept terms and Conditions agreement:
+            </label>
             <input type="checkbox" id="agreement" {...register('agreement')} />
             {errors.agreement && <span>{errors.agreement.message}</span>}
             <label htmlFor="file">File:</label>
