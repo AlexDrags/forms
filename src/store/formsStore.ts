@@ -16,6 +16,7 @@ interface IStore {
 type Store = {
   data: IStore | null;
   updateData: (formData: IStore) => void;
+  cleanData: () => void;
 };
 
 export const useReactFormState = create<Store>()((set) => ({

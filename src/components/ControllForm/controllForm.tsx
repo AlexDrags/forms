@@ -13,13 +13,14 @@ export default function ControllForm({
   isShowing: boolean;
   hide: () => void;
 }) {
-  const formDataState = useReactFormState((state) => state.data);
   const updateFormDataState = useReactFormState((state) => state.updateData);
+  const clearFormDataState = useReactFormState((state) => state.cleanData);
   const {
     formState,
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -27,7 +28,7 @@ export default function ControllForm({
   const { isValid } = formState;
 
   const formContentEl = document.getElementById('modal');
-  function printFile(file) {
+  function printFile(file: File) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (evt) {
@@ -52,14 +53,11 @@ export default function ControllForm({
                   const fdata = await printFile(data.picture[0]);
                   const obj = { base: fdata };
                   const t = Object.assign(data, obj);
-                  console.log(t);
                   updateFormDataState(t);
-                  console.log(formDataState);
                 })();
+                reset();
+                hide();
               }
-              // updateFormDataState(obj);
-
-              // console.log('formDataState', formDataState);
             })}
             id="controll"
           >
@@ -84,22 +82,24 @@ export default function ControllForm({
             {errors.confirmPassword && (
               <span>{errors.confirmPassword.message}</span>
             )}
-            <label htmlFor="male">Male:</label>
-            <input
-              type="radio"
-              id="male"
-              value="male"
-              {...register('gender')}
-            />
-            {errors.gender && <span>{errors.gender.message}</span>}
-            <label htmlFor="female">Female:</label>
-            <input
-              type="radio"
-              id="female"
-              value="female"
-              {...register('gender')}
-            />
-            {errors.gender && <span>{errors.gender.message}</span>}
+            <fieldset>
+              <label htmlFor="male">Male:</label>
+              <input
+                type="radio"
+                id="male"
+                value="male"
+                {...register('gender')}
+              />
+              {errors.gender && <span>{errors.gender.message}</span>}
+              <label htmlFor="female">Female:</label>
+              <input
+                type="radio"
+                id="female"
+                value="female"
+                {...register('gender')}
+              />
+              {errors.gender && <span>{errors.gender.message}</span>}
+            </fieldset>
             <label htmlFor="agreement">
               Accept terms and Conditions agreement:
             </label>
@@ -116,15 +116,19 @@ export default function ControllForm({
             <label htmlFor="country">Country:</label>
             <input type="text" id="country" {...register('country')} />
             {errors.country && <span>{errors.country.message}</span>}
-            {/* <label htmlFor="base">hidden:</label> */}
             <input type="text" id="base" value={'s'} {...register('base')} />
             <fieldset>
               <input type="submit" disabled={!isValid} />
-              <button type="button" onClick={hide}>
+              <button
+                type="button"
+                onClick={() => {
+                  hide();
+                  clearFormDataState();
+                }}
+              >
                 Close modal
               </button>
             </fieldset>
-            {/* <img src="localhost:5173/5d20051f-af78-4c24-ad2f-0fce75c64d5c" /> */}
           </form>,
           formContentEl
         );
