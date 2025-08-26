@@ -1,7 +1,8 @@
 import './style.css';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useUnControllFormState } from '../../store/formsStore';
+import { schema } from '../../shema/shema';
 
 function printFile(file: File) {
   return new Promise((resolve) => {
@@ -21,6 +22,7 @@ export default function UnControllForm({
   hide: () => void;
 }) {
   const formRef = useRef(null);
+  const [err, setErr] = useState({});
   const updateUnFormDataState = useUnControllFormState(
     (state) => state.updateData
   );
@@ -44,29 +46,44 @@ export default function UnControllForm({
               if (formRef.current) {
                 const formObj = new FormData(formRef.current);
                 const file = formObj.get('file') as File;
-                console.log(file);
+                const formDataObj = {
+                  name: `${formObj.get('name')}`,
+                  age: Number(`${formObj.get('age')}`),
+                  email: `${`${formObj.get('email')}`}`,
+                  password: `${formObj.get('password')}`,
+                  confirmPassword: `${formObj.get('confirmPassword')}`,
+                  gender: `${formObj.get('gender')}`,
+                  agreement: Boolean(formObj.get('agreement')),
+                  picture: formObj.get('file') as unknown as FileList,
+                  country: `${formObj.get('country')}`,
+                  base: `s`,
+                };
                 if (file) {
-                  (async function foo() {
+                  (async function foo(evt) {
+                    const re = evt.currentTarget;
                     const fdata = await printFile(file);
                     const obj = { base: fdata };
+                    try {
+                      await schema.validate(formDataObj, { abortEarly: false });
+                      re.reset();
+                      hide();
+                    } catch (errors) {
+                      if (errors.name === 'ValidationError') {
+                        const newErrors: Record<string, string> = {};
+                        errors.inner.forEach(
+                          (e: { path: string; message: string }) => {
+                            newErrors[e.path] = e.message;
+                          }
+                        );
 
-                    const formDataObj = {
-                      name: `${formObj.get('name')}`,
-                      age: Number(formObj.get('age')),
-                      email: `${formObj.get('email')}`,
-                      password: `${formObj.get('password')}`,
-                      confirmPassword: `${formObj.get('confirmPassword')}`,
-                      gender: `${formObj.get('gender')}`,
-                      agreement: Boolean(formObj.get('agreement')),
-                      picture: formObj.get('file') as unknown as FileList,
-                      country: `${formObj.get('country')}`,
-                      base: `s`,
-                    };
+                        setErr(newErrors);
+                      } else {
+                        console.error('Unexpected error:', errors);
+                      }
+                    }
                     const t = Object.assign(formDataObj, obj);
                     updateUnFormDataState(t);
-                  })();
-                  e.currentTarget.reset();
-                  hide();
+                  })(e);
                 }
               }
             }}
@@ -74,39 +91,53 @@ export default function UnControllForm({
             id="uncontroll"
           >
             <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              pattern="/[^A-Za-z0-9]/"
-              title="first uppercased letter"
-              required
-            />
+            <input type="text" name="name" id="name" />
+            {err.name && <span className="error-message">{err.name}</span>}
             <label htmlFor="age">Age:</label>
-            <input type="number" name="age" id="age" required />
+            <input type="number" name="age" id="age" />
+            {err.age && <span className="error-message">{err.age}</span>}
             <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              pattern="/\S+@\S+\.\S+/"
-              title="Invalid format: example@mail.domen"
-              required
-            />
+            <input type="email" name="email" id="email" />
+            {err.email && <span className="error-message">{err.email}</span>}
             <label htmlFor="password">Password:</label>
-            <input type="password" name="password" id="password" required />
-            <label htmlFor="rpassword">Repeat password:</label>
-            <input type="password" name="rpassword" id="rpassword" required />
+            <input type="password" name="password" id="password" />
+            {err.password && (
+              <span className="error-message">{err.password}</span>
+            )}
+            <label htmlFor="confirmPassword">Confirm password:</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+            />
+            {err.confirmPassword && (
+              <span className="error-message">{err.confirmPassword}</span>
+            )}
             <label htmlFor="male">Male:</label>
-            <input type="radio" name="gender" id="male" value="male" required />
+            <input type="radio" name="gender" id="male" value="male" />
+            {err.gender && <span className="error-message">{err.gender}</span>}
+
             <label htmlFor="female">Female:</label>
             <input type="radio" name="gender" id="female" value="female" />
+            {err.gender && <span className="error-message">{err.gender}</span>}
+
             <label htmlFor="agreement">Terms and Conditions agreement:</label>
             <input type="checkbox" name="agreement" id="agreement" />
+            {err.agreement && (
+              <span className="error-message">{err.agreement}</span>
+            )}
             <label htmlFor="file">File:</label>
-            <input type="file" name="file" id="file" required />
+            <input type="file" name="file" id="file" />
+            {err.picture && (
+              <span className="error-message">{err.picture}</span>
+            )}
+
             <label htmlFor="country">Country:</label>
-            <input type="text" name="country" id="country" required />
+            <input type="text" name="country" id="country" />
+            {err.country && (
+              <span className="error-message">{err.country}</span>
+            )}
+
             <fieldset>
               <button type="submit">Submit</button>
               <button
