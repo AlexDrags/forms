@@ -4,7 +4,8 @@ import './index.css';
 import App from './App.tsx';
 const domRoot = document.getElementById('root');
 
-if (domRoot) createRoot(domRoot).render(
+if (domRoot)
+  createRoot(domRoot).render(
     <StrictMode>
       <App />
     </StrictMode>
