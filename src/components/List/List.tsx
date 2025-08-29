@@ -1,6 +1,8 @@
+import './style.css';
 import { use } from 'react';
 import { useCountryStore } from '../../store/useCountryStrore';
 import { fetchData } from '../../api/fetchData';
+import ItemList from '../ItemList/ItemList';
 
 const cachedFetchData = (async () => fetchData('/owid-co2-data.json'))();
 
@@ -20,10 +22,11 @@ export default function List() {
       updateCountry(countryObject);
     }
   }
+
   return (
     <ul>
       {country.map((el, index) => {
-        return <li key={index}>{JSON.stringify(el, null, '\n')}</li>;
+        return <ItemList key={index} description={el} />;
       })}
     </ul>
   );

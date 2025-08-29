@@ -1,15 +1,5 @@
 import { create } from 'zustand';
-
-export type ICountryInfo = Array<unknown>;
-interface ICountry {
-  country: string;
-  info: ICountryInfo;
-}
-
-interface IStore {
-  country: ICountry[];
-  updateCountry: (newBears: ICountry) => void;
-}
+import type { IStore } from '../types/tstore';
 
 export const useCountryStore = create<IStore>((set) => ({
   country: [],

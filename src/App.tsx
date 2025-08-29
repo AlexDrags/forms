@@ -8,7 +8,7 @@ import List from './components/List/List';
 function App() {
   return (
     <>
-      <h1>Vite + React</h1>
+      <h1>CO2 emissions data by countries</h1>
       <ErrorBoundary fallback={<Error />}>
         <Suspense fallback={<Loading />}>
           <List />
