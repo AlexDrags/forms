@@ -8,7 +8,6 @@ const cachedFetchData = (async () => fetchData('/owid-co2-data.json'))();
 
 export default function List() {
   const data = use(cachedFetchData);
-
   const country = useCountryStore((state) => state.country);
   const updateCountry = useCountryStore((state) => state.updateCountry);
 
