@@ -38,6 +38,8 @@ h1 {
 }
 
 #root-modal {
+  text-align: center;
+  width: 100%;
   margin: 20px auto 20px auto;
 }
 

@@ -10,13 +10,18 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <button type="button" onClick={() => setIsOpen(!isOpen)}>
-        {!isOpen ? 'Show more' : 'Close modal window'}
-      </button>
+      {!isOpen ? (
+        <button type="button" onClick={() => setIsOpen(!isOpen)}>
+          Show more parameters
+        </button>
+      ) : (
+        ''
+      )}
       <h1>CO2 emissions data by countries</h1>
+
       <ErrorBoundary fallback={<Error />}>
         <Suspense fallback={<Loading />}>
-          <Modal isopen={isOpen} />
+          <Modal isopen={isOpen} closeOpen={setIsOpen} />
           <List />
         </Suspense>
       </ErrorBoundary>

@@ -2,7 +2,13 @@ import './style.css';
 import { createPortal } from 'react-dom';
 import { useTableStore } from '../../store/useTableStore';
 
-export default function Modal({ isopen }: { isopen: boolean }) {
+export default function Modal({
+  isopen,
+  closeOpen,
+}: {
+  isopen: boolean;
+  closeOpen: (prev: boolean) => void;
+}) {
   const showMethane = useTableStore((state) => state.updateShowMethane);
   const showOiCo2 = useTableStore((state) => state.updateShowOiCo2);
   const showTempChangeCo2 = useTableStore(
@@ -15,6 +21,7 @@ export default function Modal({ isopen }: { isopen: boolean }) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          closeOpen(!isopen);
         }}
       >
         <fieldset>
@@ -42,8 +49,8 @@ export default function Modal({ isopen }: { isopen: boolean }) {
           </p>
         </fieldset>
         <menu>
-          <button id="cancel" type="reset">
-            Reset
+          <button id="cancel" type="submit">
+            Close modal
           </button>
         </menu>
       </form>,
