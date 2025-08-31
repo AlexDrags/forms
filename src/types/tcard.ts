@@ -9,7 +9,7 @@ interface IData {
   temperature_change_from_co2: number | 'N/A';
 }
 
-interface IDescriptionInfo {
+export interface IDescriptionInfo {
   iso_code: string;
   data: IData[];
 }
