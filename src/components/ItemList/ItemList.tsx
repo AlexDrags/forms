@@ -1,10 +1,20 @@
 import './style.css';
 import type { ICountry } from '../../types/tcard';
 import { useTableStore } from '../../store/useTableStore';
-export default function ItemList({ description }: { description: ICountry }) {
+import { useCountryStore } from '../../store/useCountryStrore';
+import { useEffect } from 'react';
+export default function ItemList({
+  description,
+  yearChoice,
+}: {
+  description: ICountry;
+  yearChoice: number;
+}) {
   const showMethane = useTableStore((state) => state.isShowMethane);
   const showOiCo2 = useTableStore((state) => state.isShowOiCo2);
   const showTempChangeCo2 = useTableStore((state) => state.isShowTempChangeCo2);
+  const country = useCountryStore((state) => state.country);
+  useEffect(() => {}, [country]);
   return (
     <li>
       <table border={1} width={500}>
@@ -28,72 +38,86 @@ export default function ItemList({ description }: { description: ICountry }) {
         <tbody>
           <tr>
             <td>
-              {description.info[0].data[description.info[0].data.length - 1][
-                'year'
-              ]
+              {yearChoice === null
                 ? description.info[0].data[description.info[0].data.length - 1][
                     'year'
-                  ]
-                : 'N/A'}
+                  ] || 'N/A'
+                : (yearChoice &&
+                    description.info[0].data
+                      .filter((obj) => obj.year === yearChoice)
+                      .map((year) => year.year)) ||
+                  'N/A'}
             </td>
             <td>
-              {description.info[0].data[description.info[0].data.length - 1][
-                'population'
-              ]
+              {yearChoice === null
                 ? description.info[0].data[description.info[0].data.length - 1][
                     'population'
-                  ]
-                : 'N/A'}
+                  ] || 'N/A'
+                : yearChoice &&
+                  description.info[0].data
+                    .filter((obj) => obj.year === yearChoice)
+                    .map((year) => (year.population ? year.population : 'N/A'))}
             </td>
             <td>
-              {description.info[0].data[description.info[0].data.length - 1][
-                'co2'
-              ]
+              {yearChoice === null
                 ? description.info[0].data[description.info[0].data.length - 1][
                     'co2'
-                  ]
-                : 'N/A'}
+                  ] || 'N/A'
+                : yearChoice &&
+                  description.info[0].data
+                    .filter((obj) => obj.year === yearChoice)
+                    .map((year) => (year.co2 ? year.co2 : 'N/A'))}
             </td>
             <td>
-              {description.info[0].data[description.info[0].data.length - 1][
-                'co2_per_capita'
-              ]
+              {yearChoice === null
                 ? description.info[0].data[description.info[0].data.length - 1][
                     'co2_per_capita'
-                  ]
-                : 'N/A'}
+                  ] || 'N/A'
+                : yearChoice &&
+                  description.info[0].data
+                    .filter((obj) => obj.year === yearChoice)
+                    .map((year) =>
+                      year.co2_per_capita ? year.co2_per_capita : 'N/A'
+                    )}
             </td>
             {showMethane && (
               <td>
-                {description.info[0].data[description.info[0].data.length - 1][
-                  'methane'
-                ]
+                {yearChoice === null
                   ? description.info[0].data[
                       description.info[0].data.length - 1
-                    ]['methane']
-                  : 'N/A'}
+                    ]['methane'] || 'N/A'
+                  : yearChoice &&
+                    description.info[0].data
+                      .filter((obj) => obj.year === yearChoice)
+                      .map((year) => (year.methane ? year.methane : 'N/A'))}
               </td>
             )}
             {showOiCo2 && (
               <td>
-                {description.info[0].data[description.info[0].data.length - 1][
-                  'oil_co2'
-                ]
+                {yearChoice === null
                   ? description.info[0].data[
                       description.info[0].data.length - 1
-                    ]['oil_co2']
-                  : 'N/A'}
+                    ]['oil_co2'] || 'N/A'
+                  : yearChoice &&
+                    description.info[0].data
+                      .filter((obj) => obj.year === yearChoice)
+                      .map((year) => (year.oil_co2 ? year.oil_co2 : 'N/A'))}
               </td>
             )}
             {showTempChangeCo2 && (
               <td>
-                {description.info[0].data[description.info[0].data.length - 1][
-                  'temperature_change_from_co2'
-                ]
+                {yearChoice === null
                   ? description.info[0].data[
                       description.info[0].data.length - 1
-                    ]['temperature_change_from_co2']
-                  : 'N/A'}
+                    ]['temperature_change_from_co2'] || 'N/A'
+                  : yearChoice &&
+                    description.info[0].data
+                      .filter((obj) => obj.year === yearChoice)
+                      .map((year) =>
+                        year.temperature_change_from_co2
+                          ? year.temperature_change_from_co2
+                          : 'N/A'
+                      )}
               </td>
             )}
           </tr>

@@ -7,3 +7,8 @@ export interface IStore {
   updateCountry: (newBears: ICountry) => void;
   searchCountry: (value: ICountry[]) => void;
 }
+
+export interface IYearsStore {
+  years: number[];
+  updateYears: (year: number) => void;
+}

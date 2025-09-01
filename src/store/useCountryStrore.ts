@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { IStore } from '../types/tstore';
+import type { IStore, IYearsStore } from '../types/tstore';
 
 export const useCountryStore = create<IStore>((set) => ({
   country: [],
@@ -8,4 +8,9 @@ export const useCountryStore = create<IStore>((set) => ({
   updateCountry: (newBears) =>
     set((state) => ({ country: [...state.country, newBears] })),
   searchCountry: (value) => set({ searchValue: [...value] }),
+}));
+
+export const useYearsStore = create<IYearsStore>((set) => ({
+  years: [],
+  updateYears: (year) => set((state) => ({ years: [...state.years, year] })),
 }));
